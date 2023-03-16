@@ -81,7 +81,7 @@ RUN apt install -y python3-venv
 USER jetson
 WORKDIR /home/jetson
 
-RUN python3 -m venv ~/.virtualenvs/depthAI
+RUN python3 -m venv ~/.virtualenvs/depthAI \
     && git clone https://github.com/luxonis/depthai-python.git \
     && cd depthai-python/examples \
     && /home/jetson/.virtualenvs/depthAI/bvin/python install_requirements.py
