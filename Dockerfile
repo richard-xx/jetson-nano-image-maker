@@ -34,7 +34,8 @@ RUN touch /opt/nvidia/l4t-packages/.nv-l4t-disable-boot-fw-update-in-preinstall
 
 COPY root/etc/apt/ /etc/apt
 COPY root/usr/share/keyrings /usr/share/keyrings
-RUN apt update
+RUN echo 'APT::Acquire::Retries "3";' >> /etc/apt/apt.conf.d/80-retries \
+    && apt update
 
 # nv-l4t-usb-device-mode
 RUN apt install -y bridge-utils
