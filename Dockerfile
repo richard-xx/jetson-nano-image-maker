@@ -76,18 +76,12 @@ RUN mkdir -p /etc/udev/rules.d/ \
     && python3 -m pip config set global.extra-index-url "https://mirrors.cernet.edu.cn/pypi/simple" \
     && python3 -m pip install --upgrade pip
 
+RUN apt install -y python3-venv
+
 USER jetson
 WORKDIR /home/jetson
-ENV WORKON_HOME=/home/jetson/.virtualenvs
-ENV VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-ENV WORKON_HOME=/home/jetson/.virtualenvs
 
-RUN python3 -m pip install virtualenv virtualenvwrapper \
-    && echo "export WORKON_HOME=$HOME/.virtualenvs" >> ~/.bashrc \
-    && echo "export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3" >> ~/.bashrc \
-    && echo "source /usr/local/bin/virtualenvwrapper.sh" >> ~/.bashrc \
-    && echo "export OPENBLAS_CORETYPE=ARMV8" >> ~/.bashrc \
-    && /home/jetson/.local/bin/mkvirtualenv depthAI -p python3 \
+RUN python3 -m venv ~/.virtualenvs/depthAI
     && git clone https://github.com/luxonis/depthai-python.git \
     && cd depthai-python/examples \
     && /home/jetson/.virtualenvs/depthAI/bvin/python install_requirements.py
