@@ -1,2 +1,2 @@
 # Needed for libffi6
-deb https://mirrors.cernet.edu.cn/ubuntu-ports/ bionic main
+deb http://mirrors.cernet.edu.cn/ubuntu-ports/ bionic main
