@@ -1,6 +1,10 @@
 FROM ubuntu:20.04 as base
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ='Asia/Shanghai'
 
-RUN apt update
+RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && sed -i "s@http://.*.ubuntu.com@https://mirrors.cernet.edu.cn@g" /etc/apt/sources.list \
+    && apt update
 RUN apt install -y ca-certificates
 
 RUN apt install -y sudo
@@ -58,3 +62,30 @@ RUN useradd -ms /bin/bash jetson
 RUN echo 'jetson:jetson' | chpasswd
 
 RUN usermod -a -G sudo jetson
+
+RUN apt install -y python3 python3-pip python3-dev cmake git python3-numpy build-essential libgtk2.0-dev pkg-config \
+    ibavcodec-dev libavformat-dev libswscale-dev libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev ffmpeg libsm6 \
+    ibxext6 libgl1-mesa-glx libdc1394-22-dev libhdf5-dev git \
+    python3-pyqt5 python3-pyqt5.qtquick qml-module-qtquick-controls2 qml-module-qt-labs-platform qtdeclarative5-dev \
+    qml-module-qtquick2 qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qml-module-qtquick-layouts qml-module-qtquick-window2
+
+RUN echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | tee /etc/udev/rules.d/80-movidius.rules > /dev/null \
+    && udevadm control --reload-rules && sudo udevadm trigger \
+    && python3 -m pip config set global.extra-index-url "https://mirrors.cernet.edu.cn/pypi/simple"
+    && python3 -m pip install --upgrade pip
+
+USER jetson
+WORKDIR /home/jetson
+ENV WORKON_HOME=/home/jetson/.virtualenvs
+ENV VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+ENV WORKON_HOME=/home/jetson/.virtualenvs
+
+RUN python3 -m pip install virtualenv virtualenvwrapper \
+    && echo "export WORKON_HOME=$HOME/.virtualenvs" >> ~/.bashrc \
+    && echo "export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3" >> ~/.bashrc \
+    && echo "source /usr/local/bin/virtualenvwrapper.sh" >> ~/.bashrc \
+    && echo "export OPENBLAS_CORETYPE=ARMV8" >> ~/.bashrc \
+    && mkvirtualenv depthAI -p python3 \
+    && git clone https://github.com/luxonis/depthai-python.git \
+    && cd depthai-python/examples \
+    && /home/jetson/.virtualenvs/depthAI/bvin/python install_requirements.py
