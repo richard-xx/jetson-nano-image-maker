@@ -71,7 +71,7 @@ RUN apt install -y python3 python3-pip python3-dev cmake git python3-numpy build
 
 RUN echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | tee /etc/udev/rules.d/80-movidius.rules > /dev/null \
     && udevadm control --reload-rules && sudo udevadm trigger \
-    && python3 -m pip config set global.extra-index-url "https://mirrors.cernet.edu.cn/pypi/simple"
+    && python3 -m pip config set global.extra-index-url "https://mirrors.cernet.edu.cn/pypi/simple" \
     && python3 -m pip install --upgrade pip
 
 USER jetson
