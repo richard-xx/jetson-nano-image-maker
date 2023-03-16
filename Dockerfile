@@ -3,7 +3,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ='Asia/Shanghai'
 
 RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && sed -i "s@http://.*.ubuntu.com@http://mirrors.cernet.edu.cn@g" /etc/apt/sources.list \
     && apt update
 RUN apt install -y ca-certificates
 
