@@ -87,7 +87,7 @@ RUN python3 -m pip install virtualenv virtualenvwrapper \
     && echo "export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3" >> ~/.bashrc \
     && echo "source /usr/local/bin/virtualenvwrapper.sh" >> ~/.bashrc \
     && echo "export OPENBLAS_CORETYPE=ARMV8" >> ~/.bashrc \
-    && mkvirtualenv depthAI -p python3 \
+    && /home/jetson/.local/bin/mkvirtualenv depthAI -p python3 \
     && git clone https://github.com/luxonis/depthai-python.git \
     && cd depthai-python/examples \
     && /home/jetson/.virtualenvs/depthAI/bvin/python install_requirements.py
