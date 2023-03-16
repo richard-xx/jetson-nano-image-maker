@@ -63,14 +63,16 @@ RUN echo 'jetson:jetson' | chpasswd
 
 RUN usermod -a -G sudo jetson
 
+RUN apt install -y --no-install-recommends ubuntu-desktop
+
 RUN apt install -y python3 python3-pip python3-dev cmake git python3-numpy build-essential libgtk2.0-dev pkg-config \
     libavcodec-dev libavformat-dev libswscale-dev libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev ffmpeg libsm6 \
     libxext6 libgl1-mesa-glx libdc1394-22-dev libhdf5-dev git \
     python3-pyqt5 python3-pyqt5.qtquick qml-module-qtquick-controls2 qml-module-qt-labs-platform qtdeclarative5-dev \
     qml-module-qtquick2 qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qml-module-qtquick-layouts qml-module-qtquick-window2
 
-RUN echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | tee /etc/udev/rules.d/80-movidius.rules > /dev/null \
-    && udevadm control --reload-rules && sudo udevadm trigger \
+RUN mkdir -p /etc/udev/rules.d/ \
+    && echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | tee /etc/udev/rules.d/80-movidius.rules \
     && python3 -m pip config set global.extra-index-url "https://mirrors.cernet.edu.cn/pypi/simple" \
     && python3 -m pip install --upgrade pip
 
